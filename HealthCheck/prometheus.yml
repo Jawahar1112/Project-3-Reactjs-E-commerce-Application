@@ -1,0 +1,15 @@
+scrape_configs:
+  - job_name: "blackbox"
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://13.234.119.122/
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.1.10:9115
