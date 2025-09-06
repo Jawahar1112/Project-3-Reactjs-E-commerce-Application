@@ -1,0 +1,47 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_HUB_USER = 'jawahar11'
+        DOCKER_CREDENTIALS = credentials('dockerhub-credentials')
+        TIMESTAMP = sh(script: 'date +%Y%m%d-%H%M%S', returnStdout: true).trim()
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', 
+                    url: 'https://github.com/Jawahar1112/Project-3-Reactjs-E-commerce-Application.git'
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh '''
+                        chmod +x build.sh
+                        TIMESTAMP=${TIMESTAMP} ./build.sh
+                    '''
+                }
+            }
+        }
+        
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    sh '''
+                        echo $DOCKER_CREDENTIALS_PSW | docker login -u $DOCKER_CREDENTIALS_USR --password-stdin
+                        docker push jawahar11/prod:latest
+                        docker logout
+                    '''
+                }
+            }
+        }
+    }
+    
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}
