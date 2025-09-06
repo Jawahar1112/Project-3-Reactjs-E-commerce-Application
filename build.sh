@@ -5,6 +5,7 @@ set -e
 
 IMAGE_NAME="react-devops-app"
 DOCKER_HUB_USER="jawahar11" 
+TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 echo "🚀 Starting Docker build process..."
 echo "Timestamp: $TIMESTAMP"
 
